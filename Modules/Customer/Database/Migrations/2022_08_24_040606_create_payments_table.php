@@ -13,10 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('payments', function (Blueprint $table) {
             $table->id();
-            $table->string('user_name');
-            $table->string('password');
+            $table->foreignId('customer_id')->nullable()->constrained('customers');
+            $table->decimal('amount', 20, 3);
+            $table->timestamp('date_deposite')->nullable();
+            $table->foreignId('user_id')->nullable()->constrained('users')->comment('which user created this payment');
             $table->tinyInteger('status')->default(0);
             $table->timestamps();
             $table->softDeletes();
@@ -30,6 +32,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('payments');
     }
 };

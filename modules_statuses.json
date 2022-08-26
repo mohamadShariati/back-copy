@@ -3,5 +3,6 @@
     "Customer": true,
     "BaseProduct": true,
     "Contact": true,
-    "Contract": true
+    "Contract": true,
+    "Request": true
 }

@@ -1,5 +1,7 @@
 {
     "User": true,
     "Customer": true,
-    "BaseProduct": true
+    "BaseProduct": true,
+    "Contact": true,
+    "Contract": true
 }

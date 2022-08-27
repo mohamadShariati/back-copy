@@ -26,7 +26,7 @@ return new class extends Migration
             $table->string('payment_period')->nullable();
             $table->decimal('amount', 20, 3);
             $table->text('description')->nullable();
-            $table->foreignId('user_id')->nullable()->constrained('users')->comment('which user sign this contract');
+            $table->foreignId('create_user')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
             $table->softDeletes();
         });

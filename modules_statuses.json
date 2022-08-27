@@ -4,5 +4,7 @@
     "BaseProduct": true,
     "Contact": true,
     "Contract": true,
-    "Request": true
+    "Request": true,
+    "Role": true,
+    "Core": true
 }

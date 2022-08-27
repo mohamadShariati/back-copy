@@ -24,7 +24,7 @@ return new class extends Migration
             $table->string('mobile')->unique()->nullable();
             $table->string('tel')->nullable();
             $table->string('manager_name')->nullable();
-            $table->foreignId('user_id')->nullable()->constrained('users')->comment('which user created this company');
+            $table->foreignId('create_user')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
             $table->tinyInteger('status')->default(0);
             $table->timestamps();
             $table->softDeletes();

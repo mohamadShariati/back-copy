@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\User\Entities;
+namespace Modules\Role\Entities;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -13,6 +13,6 @@ class Role extends Model
     
     protected static function newFactory()
     {
-        return \Modules\User\Database\factories\RoleFactory::new();
+        return \Modules\Role\Database\factories\RoleFactory::new();
     }
 }

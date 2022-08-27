@@ -19,6 +19,7 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->string('attribute_name')->unique()->nullable();
             $table->decimal('amount', 20, 3);
+            $table->foreignId('create_user')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
             $table->timestamp('send_date')->nullable();
             $table->timestamp('contract_date')->nullable();
             $table->tinyInteger('status')->default(0);

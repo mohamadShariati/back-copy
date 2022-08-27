@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreignId('customer_id')->nullable()->constrained('customers');
             $table->decimal('amount', 20, 3);
             $table->timestamp('date_deposite')->nullable();
-            $table->foreignId('user_id')->nullable()->constrained('users')->comment('which user created this payment');
+            $table->foreignId('create_user')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
             $table->tinyInteger('status')->default(0);
             $table->timestamps();
             $table->softDeletes();

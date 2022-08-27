@@ -17,6 +17,10 @@ return new class extends Migration
             $table->id();
             $table->string('user_name');
             $table->string('password');
+            $table->string('email')->unique()->nullable();
+            $table->string('mobile')->unique()->nullable();
+            $table->string('first_name')->nullable();
+            $table->string('last_name')->nullable();
             $table->tinyInteger('status')->default(0);
             $table->timestamps();
             $table->softDeletes();

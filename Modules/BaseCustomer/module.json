@@ -1,0 +1,13 @@
+{
+    "name": "BaseCustomer",
+    "alias": "basecustomer",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\BaseCustomer\\Providers\\BaseCustomerServiceProvider"
+    ],
+    "aliases": {},
+    "files": [],
+    "requires": []
+}

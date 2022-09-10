@@ -1,3 +1,11 @@
 {
-    "User": true
+    "User": true,
+    "Customer": true,
+    "BaseProduct": true,
+    "Contact": true,
+    "Contract": true,
+    "Request": true,
+    "Role": true,
+    "Core": true,
+    "BaseCustomer": true
 }

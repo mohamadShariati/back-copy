@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('customers', function (Blueprint $table) {
+        Schema::create('base_customers', function (Blueprint $table) {
             $table->id();
             $table->string('company_name')->nullable();
             $table->string('agent')->nullable();
@@ -21,14 +21,14 @@ return new class extends Migration
             $table->string('province')->nullable();
             $table->string('city')->nullable();
             $table->text('address');
-            $table->string('mobile')->unique()->nullable();
+            $table->string('mobile')->nullable();
             $table->string('tel')->nullable();
             $table->string('manager_name')->nullable();
             $table->foreignId('create_user')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
             $table->tinyInteger('status')->default(0);
             $table->timestamps();
             $table->softDeletes();
-        });
+        }); 
     }
 
     /**
@@ -38,6 +38,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('customers');
+        Schema::dropIfExists('base_customers');
     }
 };

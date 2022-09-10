@@ -15,10 +15,10 @@ return new class extends Migration
     {
         Schema::create('contracts', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('customer_id')->nullable()->constrained('customers');
-            $table->string('mobile')->unique()->nullable();
+            $table->foreignId('customer_id')->references('id')->on('base_customers')->onDelete('cascade')->onUpdate('cascade');
+            $table->string('mobile')->nullable();
             $table->timestamp('contract_date')->nullable();
-            $table->string('cuntruct_subject')->nullable();
+            $table->string('contract_subject')->nullable();
             $table->tinyInteger('status')->default(0);
             $table->timestamp('start_date')->nullable();
             $table->timestamp('end_date')->nullable();

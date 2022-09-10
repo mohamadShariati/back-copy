@@ -1,14 +1,14 @@
 <?php
 
-namespace Modules\BaseProduct\Http\Controllers;
+namespace Modules\BaseCustomer\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Validator;
+use Modules\BaseCustomer\Entities\Payment;
 use Illuminate\Contracts\Support\Renderable;
-use Modules\BaseProduct\Entities\BaseProduct;
 
-class BaseProductController extends Controller
+class PaymentController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,8 +16,9 @@ class BaseProductController extends Controller
      */
     public function index()
     {
-        $baseProducts = BaseProduct::orderBy('created_at', 'desc')->simplePaginate(15);
-        return view('base-product.index', compact('baseProducts'));
+
+        $payments = Payment::orderBy('created_at', 'desc')->simplePaginate(15);
+        // return view('admin.payment',compact('payments')) ;
     }
 
     /**
@@ -26,7 +27,7 @@ class BaseProductController extends Controller
      */
     public function create()
     {
-        dd('baseProduct.create');
+        return view('basecustomer::create');
     }
 
     /**
@@ -37,22 +38,28 @@ class BaseProductController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|max:120|min:2|regex:/^[ا-یa-zA-Z0-9\-۰-۹ء-ي., ]+$/u',
+            'customer_id' => 'exists:base_customers,id',
+            'amount' => 'required|regex:/^[0-9]+$/u',
+            'date_deposite' => 'required',
+            'create_user' => 'exists:users,id',
             'status' => 'required|numeric|in:0,1',
-            'create_user' => 'exists:users,id'
         ]);
+
 
         if ($validator->fails()) {
             return response()->json(['message' => $validator->errors()->messages()]);
         }
+        // dd($request);
 
-        BaseProduct::create([
-            'name' => $request->name,
+        Payment::create([
+            'customer_id' => $request->customer_id,
+            'amount' => $request->amount,
+            'date_deposite' => $request->date_deposite,
+            'create_user' => $request->create_user,
             'status' => $request->status,
-            'create_user' => $request->create_user
-        ]);
 
-        return response()->json(['message' => 'product create succesfully']);
+        ]);
+        return response()->json(['message' => 'payment create succesfully']);
     }
 
     /**
@@ -60,9 +67,9 @@ class BaseProductController extends Controller
      * @param int $id
      * @return Renderable
      */
-    public function show(BaseProduct $baseProduct)
+    public function show($id)
     {
-        return view('baseproduct::show');
+        return view('basecustomer::show');
     }
 
     /**
@@ -70,10 +77,9 @@ class BaseProductController extends Controller
      * @param int $id
      * @return Renderable
      */
-    public function edit(BaseProduct $baseProduct)
+    public function edit($id)
     {
-        dd($baseProduct);
-        // dd('hi');
+        return view('basecustomer::edit');
     }
 
     /**
@@ -82,22 +88,27 @@ class BaseProductController extends Controller
      * @param int $id
      * @return Renderable
      */
-    public function update(Request $request, BaseProduct $baseProduct)
+    public function update(Request $request,Payment $payment)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|max:120|min:2|regex:/^[ا-یa-zA-Z0-9\-۰-۹ء-ي., ]+$/u',
+            'customer_id' => 'exists:base_customers,id',
+            'amount' => 'required|regex:/^[0-9]+$/u',
+            'date_deposite' => 'required',
+            'create_user' => 'exists:users,id',
             'status' => 'required|numeric|in:0,1',
-            'create_user' => 'exists:users,id'
         ]);
+
 
         if ($validator->fails()) {
             return response()->json(['message' => $validator->errors()->messages()]);
         }
-
+      
+        
         $inputs = $request->all();
-        $baseProduct->update($inputs);
+        
+        $payment->update($inputs);
 
-        return response()->json(['message' => 'product update succesfully']);
+        return response()->json(['message' => 'payment Update succesfully']);
     }
 
     /**
@@ -105,19 +116,10 @@ class BaseProductController extends Controller
      * @param int $id
      * @return Renderable
      */
-    public function destroy(BaseProduct $baseProduct)
+    public function destroy(Payment $payment)
     {
-        $baseProduct->delete();
-        return response()->json(['message' => 'product destroy succesfully']);
-    }
+        $payment->delete();
+        return response()->json(['message' => 'payment Deleted succesfully']);
 
-    public function test()
-    {
-       
-        $baseProducts = BaseProduct::find(1)->contracts()->orderBy('id')->get();
-        dd($baseProducts);
-        // foreach ($baseProducts as $baseProduct) {
-        //     echo $baseProduct->description;
-        // }
     }
 }

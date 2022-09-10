@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+use Modules\Role\Http\Controllers\RoleController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,4 +17,13 @@ use Illuminate\Http\Request;
 
 Route::middleware('auth:api')->get('/role', function (Request $request) {
     return $request->user();
+});
+
+Route::middleware('auth:sanctum')->prefix('role')->group(function () {
+    Route::get('/',[RoleController::class,'index'])->name('role.index');
+    Route::get('/create',[RoleController::class,'create'])->name('role.create');
+    Route::post('/store',[RoleController::class,'store'])->name('role.store');
+    Route::get('/edit/{role}',[RoleController::class,'edit'])->name('role.edit');
+    Route::post('/update/{role}',[RoleController::class,'update'])->name('role.update');
+    Route::delete('/delete/{role}',[RoleController::class,'destroy'])->name('role.destroy');
 });

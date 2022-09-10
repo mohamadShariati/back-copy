@@ -2,78 +2,77 @@
 
 namespace Modules\User\Http\Controllers;
 
-use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
+use Modules\User\Entities\User;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rules\Password;
+
 
 class UserController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     * @return Renderable
-     */
-    public function index()
+    public function register(Request $request)
     {
-        return view('user::index');
+
+        $validator = Validator::make($request->all(), [
+            'user_name' => 'required|max:120|min:2|regex:/^[ا-یa-zA-Z0-9\-۰-۹ء-ي., ]+$/u',
+            'password' => ['required', 'unique:users', Password::min(5)->letters()->numbers()],
+            'email' => ['required', 'string', 'email', 'unique:users'],
+            'mobile' => ['required', 'digits:11', 'unique:users'],
+            'first_name' => 'required|max:120|min:1|regex:/^[ا-یa-zA-Zء-ي ]+$/u',
+            'last_name' => 'required|max:120|min:1|regex:/^[ا-یa-zA-Zء-ي ]+$/u',
+            'status' => 'required|numeric|in:0,1',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['message' => $validator->errors()->messages()]);
+        }
+
+        User::create([
+            'user_name' => $request->user_name,
+            'password' => Hash::make($request->password),
+            'email' => $request->email,
+            'mobile' => $request->mobile,
+            'first_name' => $request->first_name,
+            'last_name' => $request->last_name,
+            'status' => $request->status,
+        ]);
+        return response()->json(['message' => 'user create succesfully']);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     * @return Renderable
-     */
-    public function create()
+
+    public function login()
     {
-        return view('user::create');
+        $credential = request(['user_name', 'password']);
+        if (!Auth::attempt($credential)) {
+            return response()->json(['message' => 'unAutorized'], 401);
+        }
+
+        $user = request()->user();
+        $token = $user->createToken('myToken')->plainTextToken;
+
+        return response()->json(
+            [
+                'user' => $user,
+                'token' => $token
+            ]
+        );
     }
 
-    /**
-     * Store a newly created resource in storage.
-     * @param Request $request
-     * @return Renderable
-     */
-    public function store(Request $request)
+    public function all()
     {
-        //
+        return User::all();
     }
 
-    /**
-     * Show the specified resource.
-     * @param int $id
-     * @return Renderable
-     */
-    public function show($id)
+    public function test()
     {
-        return view('user::show');
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     * @param int $id
-     * @return Renderable
-     */
-    public function edit($id)
-    {
-        return view('user::edit');
-    }
-
-    /**
-     * Update the specified resource in storage.
-     * @param Request $request
-     * @param int $id
-     * @return Renderable
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     * @param int $id
-     * @return Renderable
-     */
-    public function destroy($id)
-    {
-        //
+        // $user = User::find(1);
+        // dd($user->roles);
+        $roles = User::find(1)->roles()->orderBy('name')->get();
+        foreach ($roles as $role) {
+            echo $role->name . "<br>";
+        }
     }
 }

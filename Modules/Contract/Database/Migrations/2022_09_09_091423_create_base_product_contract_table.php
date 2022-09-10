@@ -13,11 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('contract_product', function (Blueprint $table) {
+        Schema::create('base_product_contract', function (Blueprint $table) {
             $table->foreignId('contract_id')->constrained('contracts')->onUpdate('cascade')->onDelete('cascade');
             $table->foreignId('base_product_id')->constrained('base_products')->onUpdate('cascade')->onDelete('cascade');
+            // $table->foreignId('base_product_id')->references('id')->on('base_product')->onDelete('cascade')->onUpdate('cascade');
             $table->primary(['contract_id', 'base_product_id']);
             $table->timestamp('created_at')->useCurrent();
+            $table->softDeletes();
         });
     }
 
@@ -28,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('contract_product');
+        Schema::dropIfExists('base_product_contract');
     }
 };

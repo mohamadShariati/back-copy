@@ -6,5 +6,6 @@
     "Contract": true,
     "Request": true,
     "Role": true,
-    "Core": true
+    "Core": true,
+    "BaseCustomer": true
 }

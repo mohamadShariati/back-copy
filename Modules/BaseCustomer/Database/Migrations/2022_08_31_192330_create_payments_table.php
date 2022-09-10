@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('customer_id')->nullable()->constrained('customers');
+            $table->foreignId('customer_id')->references('id')->on('base_customers')->onDelete('cascade')->onUpdate('cascade');
             $table->decimal('amount', 20, 3);
             $table->timestamp('date_deposite')->nullable();
             $table->foreignId('create_user')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');

@@ -4,11 +4,11 @@ namespace Modules\Request\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Modules\Request\Entities\RequestLog;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Contracts\Support\Renderable;
-use Modules\Request\Entities\Request as EntitiesRequest;
 
-class RequestController extends Controller
+class RequestLogController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,8 +16,8 @@ class RequestController extends Controller
      */
     public function index()
     {
-        $requests = EntitiesRequest::orderBy('created_at', 'desc')->simplePaginate(15);
-        return view('request.index',compact('requests'));
+        $contracts = RequestLog::orderBy('created_at', 'desc')->simplePaginate(15);
+        return view('request.index',compact('contracts'));
     }
 
     /**
@@ -37,38 +37,27 @@ class RequestController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'request_user'=>  'exists:users,id',
-            'request_date'=> 'required',
-            'base_product_id'=> 'exists:base_products,id',
+            'request_id'=>  'exists:requests,id',
             'subject'=> 'required|max:50|min:2|regex:/^[ا-یa-zA-Z0-9\-۰-۹ء-ي., ]+$/u',
             'description'=> 'required|max:500|min:2|regex:/^[ا-یa-zA-Z0-9\-۰-۹ء-ي., ]+$/u',
-            'priority'=> 'required|numeric|in:0,1,2',
             'status'=> 'required|numeric|in:0,1',
-            'complete_user'=> 'exists:users,id',
-            'complete_date'=> 'required',
             'create_user'=> 'exists:users,id',
-            'update_user'=> 'exists:users,id',
         ]);
 
         if($validator->fails()){
             return response()->json(['message' => $validator->errors()->messages()]);
         }
 
-        EntitiesRequest::create([
-            'request_user'=> $request->request_user,
-            'request_date'=> $request->request_date,
-            'base_product_id' =>$request->base_product_id,
-            'subject'=>$request->subject,
-            'description'=> $request->description,
-            'periority'=> $request->periority,
-            'status'=> $request->status,
-            'complete_user'=>$request->complete_user,
-            'complete_date'=> $request->complete_date,
+        RequestLog::create([
+            'request_id'=> $request->request_id,
+            'subject'=> $request->subject,
+            'description' =>$request->description,
+            'status'=>$request->status,
             'create_user'=> $request->create_user,
-            'update_user'=>$request->update_user
+            'periority'=> $request->periority,
         ]);
 
-        return response()->json(['message' => 'request created succesfully']);
+        return response()->json(['message' => 'requestLog created succesfully']);
     }
 
     /**
@@ -97,20 +86,14 @@ class RequestController extends Controller
      * @param int $id
      * @return Renderable
      */
-    public function update(Request $request, EntitiesRequest $entitiesRequest)
+    public function update(Request $request,RequestLog $requestLog)
     {
         $validator = Validator::make($request->all(), [
-            'request_user'=>  'exists:users,id',
-            'request_date'=> 'required',
-            'base_product_id'=> 'exists:base_products,id',
+            'request_id'=>  'exists:requests,id',
             'subject'=> 'required|max:50|min:2|regex:/^[ا-یa-zA-Z0-9\-۰-۹ء-ي., ]+$/u',
             'description'=> 'required|max:500|min:2|regex:/^[ا-یa-zA-Z0-9\-۰-۹ء-ي., ]+$/u',
-            'priority'=> 'required|numeric|in:0,1,2',
             'status'=> 'required|numeric|in:0,1',
-            'complete_user'=> 'exists:users,id',
-            'complete_date'=> 'required',
             'create_user'=> 'exists:users,id',
-            'update_user'=> 'exists:users,id',
         ]);
 
         if($validator->fails()){
@@ -118,9 +101,9 @@ class RequestController extends Controller
         }
 
         $inputs = $request->all();
-        $entitiesRequest->update($inputs);
+        $requestLog->update($inputs);
 
-        return response()->json(['message' => 'request update succesfully']);
+        return response()->json(['message' => 'requestLog update succesfully']);
     }
 
     /**
@@ -128,9 +111,9 @@ class RequestController extends Controller
      * @param int $id
      * @return Renderable
      */
-    public function destroy(EntitiesRequest $entitiesRequest)
+    public function destroy(RequestLog $requestLog)
     {
-        $entitiesRequest->delete();
-        return response()->json(['message' => 'request destroy succesfully']);
+        $requestLog->delete();
+        return response()->json(['message' => 'log delete succesfully']);
     }
 }

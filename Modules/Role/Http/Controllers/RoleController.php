@@ -2,9 +2,11 @@
 
 namespace Modules\Role\Http\Controllers;
 
-use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
+use Modules\Role\Entities\Role;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Contracts\Support\Renderable;
 
 class RoleController extends Controller
 {
@@ -14,7 +16,8 @@ class RoleController extends Controller
      */
     public function index()
     {
-        return view('role::index');
+        $roles=Role::orderBy('created_at', 'desc')->simplePaginate(15);
+        return view('role.index',compact('roles'));
     }
 
     /**
@@ -33,7 +36,22 @@ class RoleController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'name'=>'required|max:50|min:2|regex:/^[ا-یa-zA-Z0-9\-۰-۹ء-ي., ]+$/u',
+            'attribute_name' =>'required|max:50|min:2|regex:/^[ا-یa-zA-Z0-9\-۰-۹ء-ي., ]+$/u',
+            'status' => 'required|numeric|in:0,1'
+        ]);
+        if($validator->fails()){
+            return response()->json(['message' => $validator->errors()->messages()]);
+        }
+
+        Role::create([
+            'name' =>$request->name,
+            'attribute_name' =>$request->attribute_name,
+            'status' =>$request->status
+        ]);
+
+        return response()->json(['message' => 'role create succesfully']);
     }
 
     /**
@@ -62,9 +80,21 @@ class RoleController extends Controller
      * @param int $id
      * @return Renderable
      */
-    public function update(Request $request, $id)
+    public function update(Request $request,Role $role)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'name'=>'required|max:50|min:2|regex:/^[ا-یa-zA-Z0-9\-۰-۹ء-ي., ]+$/u',
+            'attribute_name' =>'required|max:50|min:2|regex:/^[ا-یa-zA-Z0-9\-۰-۹ء-ي., ]+$/u',
+            'status' => 'required|numeric|in:0,1'
+        ]);
+        if($validator->fails()){
+            return response()->json(['message' => $validator->errors()->messages()]);
+        }
+
+        $inputs = $request->all();
+        $role->update($inputs);
+
+        return response()->json(['message' => 'role update succesfully']);
     }
 
     /**
@@ -72,8 +102,9 @@ class RoleController extends Controller
      * @param int $id
      * @return Renderable
      */
-    public function destroy($id)
+    public function destroy(Role $role)
     {
-        //
+        $role->delete();
+        return response()->json(['message' => 'role destroy succesfully']);
     }
 }

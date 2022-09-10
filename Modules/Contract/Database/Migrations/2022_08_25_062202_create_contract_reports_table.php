@@ -23,8 +23,8 @@ return new class extends Migration
             $table->timestamp('send_date')->nullable();
             $table->timestamp('contract_date')->nullable();
             $table->tinyInteger('status')->default(0);
-            $table->softDeletes();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
